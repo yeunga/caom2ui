@@ -3,7 +3,12 @@
 This is the User Interface to perform complicated searches to a running [TAP](http://www.ivoa.net/documents/TAP/) web service.
 
 ### Configuring
-Enter appropriate values in org.opencadc.search.properties to configure the User Interface. For example, org.opencadc.search.tap-service-id = ivo://%YOUR DOMAIN%/tap-service.  Similarly org.opencadc.search.caom2ops-service-id = ivo://%YOUR DOMAIN%/caom2ops-service
+Enter appropriate values in org.opencadc.search.properties to configure the User Interface. For example: 
+org.opencadc.search.tap-service-id = ivo://%YOUR DOMAIN%/tap-service.  
+org.opencadc.search.caom2ops-service-id = ivo://%YOUR DOMAIN%/caom2ops-service
+org.opencadc.search.tap-service-host-port = http://%YOUR DOMAIN%
+org.opencadc.search.caom2ops-service-host-port = http://%YOUR DOMAIN%
+org.opencadc.search.caom2ui-host-port = http://%YOUR DOMAIN%
 
 ### Building
 
