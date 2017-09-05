@@ -2,6 +2,9 @@
 
 This is the User Interface to perform complicated searches to a running [TAP](http://www.ivoa.net/documents/TAP/) web service.
 
+### Configuring
+Enter appropriate values in org.opencadc.search.properties to configure the User Interface. For example, org.opencadc.search.tap-service-id = ivo://%YOUR DOMAIN%/tap-service.  Similarly org.opencadc.search.caom2ops-service-id = ivo://%YOUR DOMAIN%/caom2ops-service
+
 ### Building
 
 Simply run
@@ -18,9 +21,9 @@ them as their defaults.
 Simply drop the WAR into a Java Servlet Container, then point a browser to:
 [http://localhost:8080/search/](http://localhost:8080/search/)
 
-To bring up the form.  By default, this will connect to the [CADC TAP service](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/tap), but can be configured with the `org.opencadc.search.tap-service-id` system property like so:
+To bring up the form. This will connect to the TAP service configured with the org.opencadc.search.tap-service-id system property like so: 
 
-`-Dca.nrc.cadc.reg.client.RegistryClient.host=%YOUR HOST% -Dorg.opencadc.search.tap-service-id=ivo://%YOUR DOMAIN%/tap-service`
+`-Dca.nrc.cadc.reg.client.RegistryClient.host=%YOUR HOST% 
 
 Where `%YOUR HOST%` is the location of a running TAP web service, and the service id is made up of your Oragnization's service URI policy.
 
