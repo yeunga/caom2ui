@@ -72,10 +72,12 @@ import ca.nrc.cadc.auth.AuthMethod;
 import ca.nrc.cadc.reg.Standards;
 import ca.nrc.cadc.reg.client.RegistryClient;
 import ca.nrc.cadc.util.StringUtil;
-import ca.nrc.cadc.web.ConfigurableServlet;
+import ca.nrc.cadc.web.ServletConfiguration;
+
 import org.apache.http.client.utils.URIBuilder;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -88,11 +90,18 @@ import java.net.URL;
  * Servlet to redirect a caller to the appropriate place for a single request
  * download of a single CAOM-2 URI.
  */
-public class PackageServlet extends ConfigurableServlet
+public class PackageServlet extends HttpServlet
 {
     static final String CAOM2PKG_SERVICE_URI_PROPERTY_KEY = "org.opencadc.search.caom2ops-service-id";
     static final String CAOM2PKG_SERVICE_HOST_PORT_PROPERTY_KEY = "org.opencadc.search.caom2ops-service-host-port";
-    static final URI DEFAULT_CAOM2PKG_SERVICE_URI = URI.create("ivo://cadc.nrc.ca/caom2ops");
+
+    protected ServletConfiguration servletConfiguration;
+
+
+    public PackageServlet()
+    {
+        this.servletConfiguration = new ServletConfiguration();
+    }
 
     /**
      * Only supported method.  This will accept an ID parameter in the request
@@ -135,14 +144,12 @@ public class PackageServlet extends ConfigurableServlet
             throws IOException, URISyntaxException
     {
         final URL serviceURL = registryClient.getServiceURL(
-                getServiceID(
-                        CAOM2PKG_SERVICE_URI_PROPERTY_KEY,
-                        DEFAULT_CAOM2PKG_SERVICE_URI),
+                this.servletConfiguration.lookupServiceURI(CAOM2PKG_SERVICE_URI_PROPERTY_KEY),
                 Standards.PKG_10, AuthMethod.COOKIE);
 
         final URIBuilder builder = new URIBuilder(serviceURL.toURI());
 
-        final String pkgServiceHost = lookup(CAOM2PKG_SERVICE_HOST_PORT_PROPERTY_KEY);
+        final String pkgServiceHost = this.servletConfiguration.lookupString(CAOM2PKG_SERVICE_HOST_PORT_PROPERTY_KEY);
 
         if (StringUtil.hasText(pkgServiceHost))
         {

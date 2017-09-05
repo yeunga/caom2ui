@@ -70,7 +70,6 @@ package ca.nrc.cadc.web;
 
 import ca.nrc.cadc.auth.HTTPIdentityManager;
 import ca.nrc.cadc.auth.IdentityManager;
-import ca.nrc.cadc.config.ApplicationConfiguration;
 import ca.nrc.cadc.caom2.CAOMQueryGenerator;
 import ca.nrc.cadc.caom2.ObsCoreQueryGenerator;
 import ca.nrc.cadc.date.DateUtil;
@@ -109,8 +108,13 @@ public class SearchJobServlet extends SyncServlet
 
     private JobManager jobManager;
     private JobUpdater jobUpdater;
-    private ApplicationConfiguration applicationConfiguration;
+    protected ServletConfiguration servletConfiguration;
+    
 
+    public SearchJobServlet()
+    {
+        this.servletConfiguration = new ServletConfiguration();
+    }
 
     @Override
     public void init(final ServletConfig config) throws ServletException
@@ -123,8 +127,6 @@ public class SearchJobServlet extends SyncServlet
         jobManager.setJobPersistence(jobPersistence);
 
         jobUpdater = jobPersistence;
-
-        applicationConfiguration = new ApplicationConfiguration(Configuration.DEFAULT_CONFIG_FILE_PATH);
     }
 
     /**
@@ -319,8 +321,7 @@ public class SearchJobServlet extends SyncServlet
                 new AdvancedRunner(auditJob, jobUpdater, syncOutput,
                                    new TAPSearcher(new SyncResponseWriterImpl(syncOutput), jobUpdater, tapClient,
                                                    getQueryGenerator(auditJob)),
-                                   applicationConfiguration.lookupServiceURI(TAP_SERVICE_URI_PROPERTY_KEY,
-                                                                             DEFAULT_TAP_SERVICE_URI));
+                                   this.servletConfiguration.lookupServiceURI(TAP_SERVICE_URI_PROPERTY_KEY));
 
         runner.run();
         response.setStatus(HttpServletResponse.SC_OK);

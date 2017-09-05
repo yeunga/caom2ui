@@ -72,6 +72,7 @@ import ca.nrc.cadc.AbstractUnitTest;
 import ca.nrc.cadc.auth.AuthMethod;
 import ca.nrc.cadc.reg.Standards;
 import ca.nrc.cadc.reg.client.RegistryClient;
+import ca.nrc.cadc.web.ServletConfiguration;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +90,25 @@ import static org.easymock.EasyMock.verify;
 
 public class PackageServletTest extends AbstractUnitTest<PackageServlet>
 {
+	public class TestPackageServlet extends PackageServlet
+	{
+    	public TestPackageServlet()
+		{
+			super();
+			
+	    	final ServletConfiguration mockConfiguration =
+	    			createMock(ServletConfiguration.class);
+			
+	        expect(mockConfiguration.lookupServiceURI("org.opencadc.search.caom2ops-service-id")).andReturn(
+	        		URI.create("ivo://cadc.nrc.ca/caom2ops")).once();
+	        expect(mockConfiguration.lookupString("org.opencadc.search.caom2ops-service-host-port")).andReturn(
+	        		"ivo://mysite.com").once();
+	        replay(mockConfiguration);
+
+			this.servletConfiguration = mockConfiguration;
+		}
+	}
+	
     @Test
     public void get() throws Exception
     {
@@ -99,7 +119,7 @@ public class PackageServletTest extends AbstractUnitTest<PackageServlet>
         final RegistryClient mockRegistryClient =
                 createMock(RegistryClient.class);
         
-        setTestSubject(new PackageServlet());
+        setTestSubject(new TestPackageServlet());
 
         final String[] requestParameterValues = new String[]{"caom://my/obs"};
         expect(mockRequest.getParameterValues("ID")).andReturn(

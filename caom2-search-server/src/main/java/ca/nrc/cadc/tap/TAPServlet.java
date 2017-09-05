@@ -70,43 +70,39 @@ package ca.nrc.cadc.tap;
 
 import ca.nrc.cadc.auth.AuthenticationUtil;
 import ca.nrc.cadc.auth.SSOCookieCredential;
-import ca.nrc.cadc.config.ApplicationConfiguration;
 import ca.nrc.cadc.net.HttpDownload;
 import ca.nrc.cadc.reg.client.RegistryClient;
 import ca.nrc.cadc.search.util.ParameterUtil;
 import ca.nrc.cadc.util.StringUtil;
 import ca.nrc.cadc.uws.ExecutionPhase;
 import ca.nrc.cadc.uws.Job;
-import ca.nrc.cadc.web.ConfigurableServlet;
+import ca.nrc.cadc.web.ServletConfiguration;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
 
-public class TAPServlet extends ConfigurableServlet
+public class TAPServlet extends HttpServlet
 {
     private static final String TAP_SERVICE_URI_PROPERTY_KEY = "org.opencadc.search.tap-service-id";
-    private static final URI DEFAULT_TAP_SERVICE_URI = URI.create("ivo://cadc.nrc.ca/tap");
+
+    protected ServletConfiguration servletConfiguration;
 
     public TAPServlet()
     {
+        this.servletConfiguration = new ServletConfiguration();
     }
 
-    TAPServlet(ApplicationConfiguration configuration)
-    {
-        super(configuration);
-    }
-
-
+    
     /**
      * Called by the server (via the <code>service</code> method) to
      * allow a servlet to handle a GET request.
@@ -261,12 +257,7 @@ public class TAPServlet extends ConfigurableServlet
      */
     private void execute(final SyncTAPClient syncTAPClient, final Job job, final OutputStream outputStream)
     {
-        syncTAPClient.execute(lookupServiceURI(), job, outputStream);
-    }
-
-    private URI lookupServiceURI()
-    {
-        return getServiceID(TAP_SERVICE_URI_PROPERTY_KEY, DEFAULT_TAP_SERVICE_URI);
+        syncTAPClient.execute(this.servletConfiguration.lookupServiceURI(TAP_SERVICE_URI_PROPERTY_KEY), job, outputStream);
     }
 
     private Job createJob(final HttpServletRequest req)

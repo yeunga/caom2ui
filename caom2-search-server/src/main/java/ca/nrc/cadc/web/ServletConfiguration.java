@@ -70,41 +70,38 @@ package ca.nrc.cadc.web;
 
 import ca.nrc.cadc.config.ApplicationConfiguration;
 
-import javax.servlet.http.HttpServlet;
 import java.net.URI;
 
 
 /**
- * Base servlet to allow configuration.
+ * Base servlet configuration. By default it uses the configuration file 
+ * {@link ca.nrc.cadc.web.Configuration#DEFAULT_CONFIG_FILE_PATH}. To
+ * use a different configuration file, create a subclass of this class
+ * and override getConfigFilePath().
  */
-public abstract class ConfigurableServlet extends HttpServlet implements Configuration
+public class ServletConfiguration 
 {
     private final ApplicationConfiguration configuration;
 
-    public ConfigurableServlet()
+    public ServletConfiguration()
     {
-        this(new ApplicationConfiguration(DEFAULT_CONFIG_FILE_PATH));
+    	String configPath = this.getConfigFilePath();
+        this.configuration = new ApplicationConfiguration(configPath);
+        this.configuration.setThrowExceptionOnMissing(true);
     }
 
-    protected ConfigurableServlet(final ApplicationConfiguration configuration)
+    public URI lookupServiceURI(final String key)
     {
-        this.configuration = configuration;
+        return (URI) this.configuration.lookup(key);
     }
 
-
-    protected URI getServiceID(final String lookupKey,
-                               final URI defaultValue)
+    public String lookupString(final String key)
     {
-        return configuration.lookupServiceURI(lookupKey, defaultValue);
+        return (String) this.configuration.lookup(key);
     }
 
-    protected String lookup(final String lookupKey)
+    protected String getConfigFilePath()
     {
-        return configuration.lookup(lookupKey);
-    }
-
-    public String lookup(final String key, final String defaultValue)
-    {
-        return configuration.lookup(key, defaultValue);
+    	return Configuration.DEFAULT_CONFIG_FILE_PATH;
     }
 }

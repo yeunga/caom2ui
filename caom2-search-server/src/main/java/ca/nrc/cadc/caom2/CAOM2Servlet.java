@@ -68,37 +68,30 @@
 
 package ca.nrc.cadc.caom2;
 
-import ca.nrc.cadc.config.ApplicationConfiguration;
 import ca.nrc.cadc.net.HttpDownload;
-import ca.nrc.cadc.web.ConfigurableServlet;
+import ca.nrc.cadc.web.ServletConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.net.URL;
 
 
-public class CAOM2Servlet extends ConfigurableServlet
+public class CAOM2Servlet extends HttpServlet
 {
     private final static String CAOM2_UI_HOST_PORT_PROPERTY_KEY =
             "org.opencadc.search.caom2ui-host-port";
-    private final static String DEFAULT_CAOM2_UI_HOST_PORT =
-            "http://caom2ui:8080";
+    protected ServletConfiguration servletConfiguration;
 
 
     public CAOM2Servlet()
     {
-        this(new ApplicationConfiguration());
+        this.servletConfiguration = new ServletConfiguration();
     }
-
-    CAOM2Servlet(ApplicationConfiguration configuration)
-    {
-        super(configuration);
-    }
-
 
     /**
      * Called by the server (via the <code>service</code> method) to
@@ -179,9 +172,7 @@ public class CAOM2Servlet extends ConfigurableServlet
 
     private URL lookupCAOM2UIURL() throws IOException
     {
-        final String property = lookup(
-                CAOM2_UI_HOST_PORT_PROPERTY_KEY, DEFAULT_CAOM2_UI_HOST_PORT);
-
+        final String property = this.servletConfiguration.lookupString(CAOM2_UI_HOST_PORT_PROPERTY_KEY);
         return new URL(property + "/caom2ui");
     }
 }
