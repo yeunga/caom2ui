@@ -23,7 +23,7 @@ Simply drop the WAR into a Java Servlet Container, then point a browser to:
 
 To bring up the form. This will connect to the TAP service configured with the org.opencadc.search.tap-service-id system property like so: 
 
-`-Dca.nrc.cadc.reg.client.RegistryClient.host=%YOUR HOST% 
+`-Dca.nrc.cadc.reg.client.RegistryClient.host=%YOUR HOST%`
 
 Where `%YOUR HOST%` is the location of a running TAP web service, and the service id is made up of your Oragnization's service URI policy.
 
